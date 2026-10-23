@@ -79,3 +79,11 @@ The robot is **not yet ready to run a competition match**: see
 [`docs/arena_readiness.md`](docs/arena_readiness.md) for the remaining physical
 commissioning work. Do not treat a successful Python upload as proof that the
 robot can safely navigate or score.
+
+## Competition and autonomy reference
+
+For the complete Portuguese reference to the official rules, arena zones,
+scoring, object handling, autonomous mission flow, installed sensors, current
+software limitations, and future-agent guidance, read
+[`docs/GUIA_MESTRE_COMPETICAO_E_AUTONOMIA.md`](docs/GUIA_MESTRE_COMPETICAO_E_AUTONOMIA.md)
+before changing strategy or robot behavior.
