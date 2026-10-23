@@ -1,0 +1,4 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}\\.venv-pybricks\\Scripts\\python.exe",
+  "python.analysis.typeCheckingMode": "basic"
+}

@@ -1,0 +1,37 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Pybricks: diagnóstico de rodas",
+      "type": "process",
+      "command": "${workspaceFolder}\\.venv-pybricks\\Scripts\\pybricksdev.exe",
+      "args": ["run", "ble", "hub_driver\\test_driver.py", "--no-wait"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    },
+    {
+      "label": "Pybricks: diagnóstico da garra",
+      "type": "process",
+      "command": "${workspaceFolder}\\.venv-pybricks\\Scripts\\pybricksdev.exe",
+      "args": ["run", "ble", "hub_claw\\test_claw.py", "--no-wait"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    },
+    {
+      "label": "Pybricks: monitor do HubDriver",
+      "type": "process",
+      "command": "${workspaceFolder}\\.venv-pybricks\\Scripts\\pybricksdev.exe",
+      "args": ["run", "ble", "hub_driver\\main.py", "--no-wait"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    },
+    {
+      "label": "Pybricks: monitor do HubClaw",
+      "type": "process",
+      "command": "${workspaceFolder}\\.venv-pybricks\\Scripts\\pybricksdev.exe",
+      "args": ["run", "ble", "hub_claw\\main.py", "--no-wait"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    }
+  ]
+}
