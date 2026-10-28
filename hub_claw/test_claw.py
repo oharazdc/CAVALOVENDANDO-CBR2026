@@ -11,6 +11,7 @@ from constants import (
     CLAW_OPEN_ANGLE,
     ELEVATOR_DOWN_ANGLE,
     ELEVATOR_UP_ANGLE,
+    MECHANISM_CALIBRATION_CONFIRMED,
 )
 from sensors import ClawSensors
 
@@ -29,14 +30,30 @@ claw = Claw()
 sensors = ClawSensors()
 
 print("No automatic movement.")
-print("LEFT=open 10 deg; RIGHT=close 10 deg")
-print("BLUETOOTH=elevator up 10 deg; LEFT+RIGHT=down 10 deg")
+if MECHANISM_CALIBRATION_CONFIRMED:
+    print("LEFT=open 10 deg; RIGHT=close 10 deg")
+    print("BLUETOOTH=elevator up 10 deg; LEFT+RIGHT=down 10 deg")
+else:
+    print("Mechanism calibration is unconfirmed; this test will not move motors.")
 print("CENTER stops the program; angles:", claw.angles())
-print("Cube HSV:", sensors.read_cube_hsv())
+print("Cube color/reflection:", sensors.read_cube_color(), sensors.read_cube_reflection())
 print("Distance mm:", sensors.read_front_distance_mm())
 
 while True:
     pressed = hub.buttons.pressed()
+    if Button.CENTER in pressed:
+        claw.stop()
+        break
+
+    if not MECHANISM_CALIBRATION_CONFIRMED:
+        if pressed:
+            print("Movement locked until current-build calibration is confirmed.")
+            print("Color/reflection:", sensors.read_cube_color(), sensors.read_cube_reflection())
+            print("Distance mm:", sensors.read_front_distance_mm())
+            wait_for_release(hub)
+        wait(20)
+        continue
+
     if Button.LEFT in pressed and Button.RIGHT in pressed:
         current = claw.elevator_motor.angle()
         target = clamp(
@@ -73,7 +90,7 @@ while True:
         print("Elevator target:", target)
 
     if pressed:
-        print("HSV:", sensors.read_cube_hsv())
+        print("Color/reflection:", sensors.read_cube_color(), sensors.read_cube_reflection())
         print("Distance mm:", sensors.read_front_distance_mm())
         wait_for_release(hub)
     wait(20)

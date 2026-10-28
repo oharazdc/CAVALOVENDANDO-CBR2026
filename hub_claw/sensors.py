@@ -14,5 +14,11 @@ class ClawSensors:
         hsv = self.claw_color.hsv()
         return hsv.h, hsv.s, hsv.v
 
+    def read_cube_color(self):
+        return self.claw_color.color()
+
+    def read_cube_reflection(self) -> int:
+        return self.claw_color.reflection()
+
     def read_front_distance_mm(self) -> int:
         return self.front_distance.distance()

@@ -55,30 +55,40 @@ not the hub firmware.
 
 | Port | Device |
 | --- | --- |
-| A | Claw color sensor |
+| A | Front color sensor aimed at cubes (~2 cm above floor) |
 | B | Empty |
 | C | Claw open/close motor |
 | D | Elevator motor |
-| E | Ultrasonic sensor |
-| F | Side sensor; device type still needs confirmation |
+| E | Ultrasonic distance sensor; exact physical orientation still needs confirmation |
+| F | Unconfirmed device; do not initialize as a color or distance sensor until checked |
 
-Motor target angles currently recorded for HubClaw:
+Historical HubClaw motor targets (not confirmed against the current physical build):
 
 - Claw: open `389°`, closed `-60°`.
 - Elevator: down `197°` (5 mm above floor), up `-1262°` (75 mm above floor).
 
-These values rely on the same motor-angle reference used during calibration.
-Do not reset the motor angle before using them.
+Do not use these angles or the old timed motor values as current calibration.
+Claw/elevator movement and autonomous pickup are blocked until calibration is
+confirmed in code after a supervised check.
 
 ## Current state
 
 This folder is a clean, safe starting project. The entry points only initialize
 devices and report sensor readings; they do not start autonomous movement.
-The diagnostic button programs move one mechanism at a time in small steps.
+The wheel diagnostic moves one wheel by a small step. Claw/elevator movement is
+locked until the current mechanism calibration is confirmed in
+`hub_claw/constants.py`. Read-only sensor diagnostics are available for the
+known HubDriver A/B sensors and HubClaw A/E sensors; HubClaw port F remains
+unassigned until its physical device is identified.
 The robot is **not yet ready to run a competition match**: see
 [`docs/arena_readiness.md`](docs/arena_readiness.md) for the remaining physical
 commissioning work. Do not treat a successful Python upload as proof that the
 robot can safely navigate or score.
+
+The autonomous pickup/drive prototypes are blocked by default until the
+mechanism calibration and two-hub BLE protocol are confirmed. The Pybricks
+backup also contains port-F and timed-motor experiments that are not treated as
+current hardware assignments or validated calibration.
 
 ## Competition and autonomy reference
 

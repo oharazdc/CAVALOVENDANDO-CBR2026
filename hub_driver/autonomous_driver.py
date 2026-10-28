@@ -9,12 +9,19 @@ from pybricks.parameters import Axis
 from pybricks.tools import wait
 
 from constants import (
+    BLE_PROTOCOL_CONFIRMED,
     FRONT_LEFT_PORT,
     FRONT_RIGHT_PORT,
     REAR_LEFT_PORT,
     REAR_RIGHT_PORT,
 )
 from pybricks.pupdevices import Motor
+
+
+if not BLE_PROTOCOL_CONFIRMED:
+    raise RuntimeError(
+        "Locomocao autonoma bloqueada: valide o protocolo BLE entre os hubs."
+    )
 
 
 CLAW_TO_DRIVER = 144

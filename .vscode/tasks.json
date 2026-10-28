@@ -18,6 +18,30 @@
       "problemMatcher": []
     },
     {
+      "label": "Pybricks: leitura dos sensores do chão A/B",
+      "type": "process",
+      "command": "${workspaceFolder}\\.venv-pybricks\\Scripts\\pybricksdev.exe",
+      "args": ["run", "ble", "hub_driver\\calibrate_ground_sensors.py", "--no-wait"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    },
+    {
+      "label": "Pybricks: leitura do sensor de cor frontal A",
+      "type": "process",
+      "command": "${workspaceFolder}\\.venv-pybricks\\Scripts\\pybricksdev.exe",
+      "args": ["run", "ble", "hub_claw\\calibrate_front_color.py", "--no-wait"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    },
+    {
+      "label": "Pybricks: leitura do ultrassônico E",
+      "type": "process",
+      "command": "${workspaceFolder}\\.venv-pybricks\\Scripts\\pybricksdev.exe",
+      "args": ["run", "ble", "hub_claw\\calibrate_ultrasonic.py", "--no-wait"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    },
+    {
       "label": "Pybricks: monitor do HubDriver",
       "type": "process",
       "command": "${workspaceFolder}\\.venv-pybricks\\Scripts\\pybricksdev.exe",

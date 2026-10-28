@@ -11,6 +11,11 @@ da autonomia. O PDF oficial e decisões atuais dos árbitros/organização têm
 precedência sobre o resumo. Não assuma que um item marcado como pendente foi
 implementado ou calibrado.
 
+Não altere `MECHANISM_CALIBRATION_CONFIRMED` ou `BLE_PROTOCOL_CONFIRMED` para
+`True` apenas para fazer um programa iniciar. Cada flag só pode ser habilitada
+depois de confirmação supervisionada do mecanismo ou de teste bem-sucedido do
+protocolo entre os dois hubs, respectivamente.
+
 Preserve sempre: operação autônoma embarcada; nenhuma câmera, LiDAR ou
 processamento de imagem; envelope máximo de 300 × 300 mm; até dois cubos por
 incursão e entrega antes de nova coleta; cubos brancos/não elegíveis e

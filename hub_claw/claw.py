@@ -12,6 +12,7 @@ from constants import (
     ELEVATOR_DOWN_ANGLE,
     ELEVATOR_MOTOR_PORT,
     ELEVATOR_UP_ANGLE,
+    MECHANISM_CALIBRATION_CONFIRMED,
 )
 
 
@@ -22,6 +23,10 @@ class Claw:
         self.elevator_motor = Motor(ELEVATOR_MOTOR_PORT, reset_angle=False)
 
     def set_claw_angle(self, target: int, speed: int = CLAW_BENCH_SPEED) -> None:
+        if not MECHANISM_CALIBRATION_CONFIRMED:
+            raise RuntimeError(
+                "Garra bloqueada: confirme a calibracao na montagem atual."
+            )
         if not CLAW_CLOSED_ANGLE <= target <= CLAW_OPEN_ANGLE:
             raise ValueError("Claw target is outside the measured range.")
         if not 0 < speed <= CLAW_BENCH_SPEED:
@@ -31,6 +36,10 @@ class Claw:
     def set_elevator_angle(
         self, target: int, speed: int = ELEVATOR_BENCH_SPEED
     ) -> None:
+        if not MECHANISM_CALIBRATION_CONFIRMED:
+            raise RuntimeError(
+                "Elevador bloqueado: confirme a calibracao na montagem atual."
+            )
         low = min(ELEVATOR_DOWN_ANGLE, ELEVATOR_UP_ANGLE)
         high = max(ELEVATOR_DOWN_ANGLE, ELEVATOR_UP_ANGLE)
         if not low <= target <= high:

@@ -16,6 +16,10 @@ print("Each press moves one wheel by only 5 degrees. Center stops the program.")
 
 while True:
     pressed = hub.buttons.pressed()
+    if Button.CENTER in pressed:
+        drive.stop()
+        break
+
     wheel = None
     if Button.LEFT in pressed and Button.RIGHT in pressed:
         wheel = "rear_right"

@@ -10,11 +10,19 @@ from pybricks.tools import wait
 
 from claw import Claw
 from constants import (
+    BLE_PROTOCOL_CONFIRMED,
     CLAW_OPEN_ANGLE,
     ELEVATOR_DOWN_ANGLE,
     ELEVATOR_UP_ANGLE,
+    MECHANISM_CALIBRATION_CONFIRMED,
 )
 from sensors import ClawSensors
+
+
+if not BLE_PROTOCOL_CONFIRMED or not MECHANISM_CALIBRATION_CONFIRMED:
+    raise RuntimeError(
+        "Coleta autonoma bloqueada: valide o BLE e calibre a garra/elevador."
+    )
 
 
 CLAW_TO_DRIVER = 144

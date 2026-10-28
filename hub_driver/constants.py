@@ -9,16 +9,21 @@ FRONT_LEFT_PORT = Port.D
 FRONT_RIGHT_PORT = Port.E
 REAR_LEFT_PORT = Port.F
 
-# Drive parameters from the team's current measurements.
+# Provisional geometry notes only. These values conflict with newer physical
+# notes and must not be used for calibrated motion until remeasured.
 MAX_MOTOR_SPEED = 700
 BENCH_STEP_SPEED = 60
 BENCH_STEP_DEGREES = 5
-WHEEL_RADIUS_CM = 3
-LX_CM = 12.818 / 2
-LY_CM = 7.978 / 2
+WHEEL_RADIUS_CM = 3  # Legacy estimate; newer note says diameter ~= 6.225 cm.
+LX_CM = 12.818 / 2  # Legacy estimate; axis convention/measurement unverified.
+LY_CM = 7.978 / 2  # Legacy estimate; axis convention/measurement unverified.
 WALL_TO_ROAD_CM = 8
 
-# HubDriver floor sensor HSV references, ordered as (hue, saturation, value).
+# Autonomous BLE movement is disabled until the two-hub protocol is tested.
+BLE_PROTOCOL_CONFIRMED = False
+
+# Legacy floor HSV samples, not verified on the current build or arena surface.
+# Do not use these as final color thresholds without fresh calibration.
 GROUND_HSV_LEFT = {
     "blue": (217, 57, 28),
     "red": (350, 84, 62),

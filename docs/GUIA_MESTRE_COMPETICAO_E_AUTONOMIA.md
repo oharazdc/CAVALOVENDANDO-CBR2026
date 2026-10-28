@@ -2,7 +2,7 @@
 
 **Uso:** referência duradoura para equipe, manutenção do código e agentes/chats futuros.  
 **Regulamento-base:** *Regras Challenge 2026 Português, versão 1.0*, 12 páginas, fornecido pela equipe.  
-**Atualizado em:** 23/10/2026.  
+**Atualizado em:** 28/10/2026.
 **Escopo do hardware descrito:** projeto `CAVALOVENDANDO-CBR2026`, dois hubs Pybricks.
 
 > Este guia distingue requisitos publicados pela competição de orientações de projeto e fatos ainda não verificados. Se uma versão posterior do regulamento, a organização ou o árbitro divergir deste resumo, prevalece a decisão oficial mais recente. Não transforme uma hipótese de estratégia em regra oficial.
@@ -116,14 +116,14 @@ Uma implementação robusta deve manter estados explícitos e salvar a contagem/
 
 | Hub/porta | Dispositivo no mapa atual | Uso possível | Limite conhecido |
 |---|---|---|---|
-| HubDriver A | Sensor de cor inferior esquerdo | HSV do piso, linha/zonas sob o lado esquerdo | Referências registradas são amostras, não faixas validadas. |
-| HubDriver B | Sensor de cor inferior direito | HSV do piso, linha/zonas sob o lado direito | Idem; leituras podem divergir por iluminação, altura e posição. |
-| HubClaw A | Sensor de cor junto à garra | HSV do cubo quando alinhado e perto | Ainda não há calibração de cubos; não usar amostras de piso como calibração de cubo. |
-| HubClaw E | Ultrassom frontal | Distância aproximada ao objeto frontal | Não classifica cor nem semântica; ecos variam com geometria e orientação. |
-| HubClaw F | “Side sensor” | Possível leitura lateral | Tipo/modelo e comportamento não registrados; não depender dele até confirmar. |
+| HubDriver A | Sensor de cor LEGO SPIKE, inferior esquerdo, ~1,3 cm do chão | Cor/reflexão/HSV do piso à esquerda | Leituras do modelo atual ainda precisam de calibração real. |
+| HubDriver B | Sensor de cor LEGO SPIKE, inferior direito, ~1,3 cm do chão | Cor/reflexão/HSV do piso à direita | Idem. |
+| HubClaw A | Sensor de cor LEGO SPIKE frontal, ~2 cm do chão, voltado aos cubos | Cor/reflexão/HSV de objeto próximo | Sem faixas de cubos calibradas. |
+| HubClaw E | Sensor ultrassônico LEGO SPIKE; montagem frontal presumida, orientação exata a confirmar | Distância aproximada | Não classifica cor/semântica; alcance e resposta na montagem atual não medidos. |
+| HubClaw F | Tipo, orientação e função não confirmados | Nenhum uso deve ser assumido | Não inicializar como sensor de cor ou distância até inspeção física. |
 | Motores/encoders | Quatro motores de tração; motores de garra/elevador | Movimento e odometria/posição mecânica se calibrados | Direções, escala, precisão e referência do mecanismo ainda exigem validação física. |
 
-**Amostras atuais de HSV do piso:** estão em `hub_driver/constants.py` e `docs/hardware_map.md` para azul, vermelho, verde, amarelo, preto, branco e marrom. São referências iniciais; não são bandas de decisão confiáveis. HSV do piso não é HSV de cubo.
+**Amostras antigas de HSV do piso:** permanecem em `hub_driver/constants.py` apenas como referências históricas, não confirmadas na montagem atual nem na lona da competição. Não são bandas de decisão confiáveis. HSV do piso não é HSV de cubo.
 
 Antes do evento, calibrar HSV dos sete cubos reais com o sensor HubClaw A na distância/ângulo reais; calibrar piso de cada sensor HubDriver nas condições de luz reais; incluir várias leituras, dispersão, limiar de rejeição e categoria **DESCONHECIDO**. Se a distância ao cubo for inadequada, sensor saturar, ou a classificação ficar entre classes, não pegar. Validar novamente ao trocar a lona, iluminação, altura de montagem ou sensor.
 
@@ -134,8 +134,9 @@ Um mapeamento por cor só classifica as seis cores que têm destino quando aquel
 - Um robô por equipe. Hardware livre, incluindo controladores, sensores, atuadores e kits educacionais; exceção expressa: **câmeras, LiDAR ou similares e processamento de imagens são proibidos**.
 - Largura e comprimento máximos: **300 × 300 mm** em todos os momentos, inclusive garra/braço/extensor totalmente aberto e operação. Altura não tem limite especificado.
 - Garra/elevador não podem exceder o envelope. Levantamento físico da dimensão totalmente estendida antes do evento.
-- Valores anotados no projeto (referenciais, não automaticamente seguros): garra aberta 389°, fechada -60°; elevador baixo 197° (garra ~5 mm do chão), alto -1262° (garra ~75 mm). Manter referência de ângulo; conferir se sobrevive ao início e aos ciclos de energia. Não atingir batente mecânico em alta velocidade nem apertar cubo até deformá-lo.
-- Tráfego por BLE entre os dois hubs embarcados é comunicação interna do robô, não controle externo. Definir protocolo com heartbeat, watchdog e mensagem de parada; perda de comunicação deve parar tração. Comunicação externa ou comando humano não pode decidir/navegar o robô durante a partida, salvo autorização expressa do árbitro.
+- A equipe relata que a garra consegue transportar dois cubos empilhados; a estabilidade/retensão durante o percurso ainda precisa ser validada.
+- Valores históricos, ainda não confirmados na montagem atual: garra aberta 389°, fechada -60°; elevador baixo 197°, alto -1262°. Tempos antigos de 2,3 s (abrir), 0,4 s (fechar) e 0,7 s (elevador), a 180°/s, também são provisórios. Não trocar ângulos por tempos nem executar alvos antes de calibração supervisionada. O código mantém movimento da garra/elevador bloqueado por padrão.
+- Tráfego por BLE entre os dois hubs embarcados é comunicação interna do robô, não controle externo. O protótipo atual tem canais incompatíveis: HubClaw transmite em 141 enquanto HubDriver escuta 144; HubDriver tem broadcast 145, mas não transmite os comandos de retorno. O protocolo não foi testado com sucesso, e os programas autônomos ficam bloqueados por padrão até confirmação. Comunicação externa ou comando humano não pode decidir/navegar o robô durante a partida, salvo autorização expressa do árbitro.
 
 ## 9. Pontuação (regulamento v1.0)
 
@@ -179,10 +180,12 @@ O sonar frontal deve ser usado como zona de parada; o sensor de garra, como clas
 
 Arquivos base: `hub_driver/`, `hub_claw/`, `docs/hardware_map.md`, `docs/arena_readiness.md`.
 
-- `hub_driver/autonomous_driver.py` e `hub_claw/autonomous_pickup.py` são uma prova de conceito de aproximação frontal de um objeto, com mensagem BLE `FWD`/`STOP`; não fazem mapa/rota pela arena, classificação de cores, seleção de destino, navegação por linha ou entrega.
+- `hub_driver/autonomous_driver.py` e `hub_claw/autonomous_pickup.py` são uma prova de conceito de aproximação frontal de um objeto, com mensagem BLE `FWD`/`STOP`; não fazem mapa/rota pela arena, classificação de cores, seleção de destino, navegação por linha ou entrega. Execução está bloqueada por padrão porque a calibração mecânica e o protocolo BLE não foram confirmados.
 - A rotina de garra aproxima-se de **qualquer objeto** no alcance e pode fechar/levantar sem confirmar cor ou elegibilidade. Não usá-la como programa de partida.
 - Ainda faltam máquina de estados completa, protocolo bidirecional de carga/destino/falha, mapa de rotas, seguir linhas, recuperação de linha, detecção de oponente, evitar vias bloqueadas, classificador com rejeição, confirmação de pega/entrega e sinal oficial de cubo branco.
-- A documentação marca pendente: tipo do sensor HubClaw F, direção/orientação dos motores e mecanum, distância por grau/precisão de giro, HSV real, referência dos atuadores após reinício, ângulo de preensão, mapa de plataformas, protocolo BLE, envelope estendido e ensaios completos.
+- O backup Pybricks de 28/10 contém leituras de cor/reflexão para A/B, tentativa de leitura RGB que falhou, testes separados para E e F e movimentos temporizados C/D. Os novos diagnósticos no projeto são somente leitura para os sensores conhecidos A/B e A/E. Não se incorporou o teste de F nem o movimento temporizado de garra/elevador, pois F não está identificado e os valores mecânicos são provisórios.
+- A documentação marca pendente: tipo/orientação do sensor HubClaw F, orientação exata do ultrassom E, confirmação dos sentidos positivos em todos os quatro motores, significado da medida de 8,3 cm, geometria final, HSV novo, referência segura dos atuadores, mapa de plataformas, rota de ruas, sinal do cubo branco, protocolo BLE, envelope estendido e ensaios completos.
+- Os diagnósticos `hub_driver/calibrate_ground_sensors.py`, `hub_claw/calibrate_front_color.py` e `hub_claw/calibrate_ultrasonic.py` mostram leituras sem mover motores. O sensor F foi deixado de fora até identificação física.
 - A versão atual dos arquivos não deve ser chamada de autônoma/certificada. Um upload bem-sucedido não prova prontidão física.
 
 ## 13. Plano mínimo de validação antes de uma partida
