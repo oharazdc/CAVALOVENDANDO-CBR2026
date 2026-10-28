@@ -14,10 +14,12 @@ claw.stop()
 
 print("HubClaw online; diagnostic mode, no movement commanded.")
 print("Motor angles:", claw.angles())
-print("Port F is intentionally not initialized until its physical type is confirmed.")
+print("Cube color sensor is configured on HubClaw port F; port A is unassigned.")
 
 while True:
     print("Claw color:", sensors.read_cube_color())
     print("Claw reflection:", sensors.read_cube_reflection())
+    print("Claw HSV:", sensors.read_cube_hsv())
+    print("Observed HSV candidates (not validated):", sensors.observed_cube_color_candidates())
     print("Front distance mm:", sensors.read_front_distance_mm())
     wait(500)

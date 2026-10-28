@@ -1,4 +1,4 @@
-"""One-cube approach-and-grab proof of concept for HubClaw.
+"""Locked one-cube approach-and-grab proof of concept for HubClaw.
 
 It approaches whatever is in front of the ultrasonic sensor; it does not yet
 classify cube colors or search the arena. Start only in a clear, bounded area.
@@ -11,6 +11,7 @@ from pybricks.tools import wait
 from claw import Claw
 from constants import (
     BLE_PROTOCOL_CONFIRMED,
+    CLAW_CLOSED_ANGLE,
     CLAW_OPEN_ANGLE,
     ELEVATOR_DOWN_ANGLE,
     ELEVATOR_UP_ANGLE,
@@ -90,7 +91,10 @@ try:
     if found:
         print("Object nearby; closing claw and lifting.")
         # Conservative partial close: avoids driving to the hard-stop angle.
-        grip_target = max(-60, min(389, claw.claw_motor.angle() - 80))
+        grip_target = claw.claw_motor.angle() + 80  # clockwise closes the claw
+        grip_low = min(CLAW_CLOSED_ANGLE, CLAW_OPEN_ANGLE)
+        grip_high = max(CLAW_CLOSED_ANGLE, CLAW_OPEN_ANGLE)
+        grip_target = max(grip_low, min(grip_high, grip_target))
         claw.set_claw_angle(grip_target)
         claw.set_elevator_angle(ELEVATOR_UP_ANGLE)
         print("Pickup sequence complete. Check physically whether it held a cube.")

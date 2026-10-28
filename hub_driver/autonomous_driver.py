@@ -1,4 +1,4 @@
-"""Low-speed forward approach controlled by HubClaw over Pybricks BLE.
+"""Experimental low-speed approach; locked until the BLE protocol is verified.
 
 Run this program on HubDriver at the same time as hub_claw/autonomous_pickup.py.
 Keep the robot raised for the first test and verify wheel directions first.

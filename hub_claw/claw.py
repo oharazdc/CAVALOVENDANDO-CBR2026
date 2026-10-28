@@ -1,6 +1,6 @@
 """Bounded low-level claw and elevator controls for HubClaw."""
 
-from pybricks.parameters import Stop
+from pybricks.parameters import Direction, Stop
 from pybricks.pupdevices import Motor
 
 from constants import (
@@ -19,15 +19,25 @@ from constants import (
 class Claw:
     def __init__(self) -> None:
         # Keep the measured angle reference; do not zero motors on startup.
-        self.claw_motor = Motor(CLAW_MOTOR_PORT, reset_angle=False)
-        self.elevator_motor = Motor(ELEVATOR_MOTOR_PORT, reset_angle=False)
+        self.claw_motor = Motor(
+            CLAW_MOTOR_PORT,
+            positive_direction=Direction.CLOCKWISE,
+            reset_angle=False,
+        )
+        self.elevator_motor = Motor(
+            ELEVATOR_MOTOR_PORT,
+            positive_direction=Direction.CLOCKWISE,
+            reset_angle=False,
+        )
 
     def set_claw_angle(self, target: int, speed: int = CLAW_BENCH_SPEED) -> None:
         if not MECHANISM_CALIBRATION_CONFIRMED:
             raise RuntimeError(
                 "Garra bloqueada: confirme a calibracao na montagem atual."
             )
-        if not CLAW_CLOSED_ANGLE <= target <= CLAW_OPEN_ANGLE:
+        low = min(CLAW_CLOSED_ANGLE, CLAW_OPEN_ANGLE)
+        high = max(CLAW_CLOSED_ANGLE, CLAW_OPEN_ANGLE)
+        if not low <= target <= high:
             raise ValueError("Claw target is outside the measured range.")
         if not 0 < speed <= CLAW_BENCH_SPEED:
             raise ValueError("Claw speed must be between 1 and 20 deg/s.")

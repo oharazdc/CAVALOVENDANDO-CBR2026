@@ -118,14 +118,32 @@ Uma implementação robusta deve manter estados explícitos e salvar a contagem/
 |---|---|---|---|
 | HubDriver A | Sensor de cor LEGO SPIKE, inferior esquerdo, ~1,3 cm do chão | Cor/reflexão/HSV do piso à esquerda | Leituras do modelo atual ainda precisam de calibração real. |
 | HubDriver B | Sensor de cor LEGO SPIKE, inferior direito, ~1,3 cm do chão | Cor/reflexão/HSV do piso à direita | Idem. |
-| HubClaw A | Sensor de cor LEGO SPIKE frontal, ~2 cm do chão, voltado aos cubos | Cor/reflexão/HSV de objeto próximo | Sem faixas de cubos calibradas. |
+| HubClaw F | Sensor de cor LEGO SPIKE da garra, ~2 cm do chão, voltado aos cubos | Cor/reflexão/HSV de objeto próximo | Faixas HSV observadas, ainda não validadas para decisão de coleta. |
 | HubClaw E | Sensor ultrassônico LEGO SPIKE; montagem frontal presumida, orientação exata a confirmar | Distância aproximada | Não classifica cor/semântica; alcance e resposta na montagem atual não medidos. |
-| HubClaw F | Tipo, orientação e função não confirmados | Nenhum uso deve ser assumido | Não inicializar como sensor de cor ou distância até inspeção física. |
+| HubClaw A | Sem função atribuída no mapa mais recente | Nenhum uso deve ser assumido | Confirmar se a porta está vazia no robô atual. |
 | Motores/encoders | Quatro motores de tração; motores de garra/elevador | Movimento e odometria/posição mecânica se calibrados | Direções, escala, precisão e referência do mecanismo ainda exigem validação física. |
 
 **Amostras antigas de HSV do piso:** permanecem em `hub_driver/constants.py` apenas como referências históricas, não confirmadas na montagem atual nem na lona da competição. Não são bandas de decisão confiáveis. HSV do piso não é HSV de cubo.
 
-Antes do evento, calibrar HSV dos sete cubos reais com o sensor HubClaw A na distância/ângulo reais; calibrar piso de cada sensor HubDriver nas condições de luz reais; incluir várias leituras, dispersão, limiar de rejeição e categoria **DESCONHECIDO**. Se a distância ao cubo for inadequada, sensor saturar, ou a classificação ficar entre classes, não pegar. Validar novamente ao trocar a lona, iluminação, altura de montagem ou sensor.
+**Leituras observadas de HSV dos cubos no sensor HubClaw F** (H,S,V):
+
+| Cor | H | S | V |
+|---|---:|---:|---:|
+| Vermelho | 348–354 | 77–80 | 26–28 |
+| Amarelo | 55–56 | 61–62 | 99–100 |
+| Verde | 170–180 | 57–67 | 7–10 |
+| Azul | 189–200 | 66–71 | 8–10 |
+| Preto | 170–190 | 45–51 | 7–10 |
+| Branco | 194–215 | 15–27 | 34–100 |
+| Marrom | H ≈ 10 | 39–42 | 20–22 |
+
+Esses dados são observações, não limites definitivos. `hub_claw/constants.py`
+guarda as faixas candidatas; `CUBE_HSV_RANGES_VALIDATED` permanece falso e a
+rotina só mostra possíveis correspondências, sem autorizar coleta. Marrom não
+é correspondido automaticamente porque o matiz foi dado apenas como
+aproximado. Validar particularmente a separação entre azul, verde e preto.
+
+Antes do evento, validar HSV dos sete cubos reais com o sensor HubClaw F na distância/ângulo reais; calibrar piso de cada sensor HubDriver nas condições de luz reais; incluir várias leituras, dispersão, limiar de rejeição e categoria **DESCONHECIDO**. Se a distância ao cubo for inadequada, sensor saturar, ou a classificação ficar entre classes, não pegar. Validar novamente ao trocar a lona, iluminação, altura de montagem ou sensor.
 
 Um mapeamento por cor só classifica as seis cores que têm destino quando aquela plataforma existe. Antes de coletar: `classe confiável?` AND `não é branco?` AND `não está em ponto de obstáculo?` AND `há plataforma da mesma cor?` AND `capacidade da incursão < 2?`. Se qualquer resposta for negativa ou desconhecida, preservar o cubo e evitar a via.
 
@@ -135,6 +153,8 @@ Um mapeamento por cor só classifica as seis cores que têm destino quando aquel
 - Largura e comprimento máximos: **300 × 300 mm** em todos os momentos, inclusive garra/braço/extensor totalmente aberto e operação. Altura não tem limite especificado.
 - Garra/elevador não podem exceder o envelope. Levantamento físico da dimensão totalmente estendida antes do evento.
 - A equipe relata que a garra consegue transportar dois cubos empilhados; a estabilidade/retensão durante o percurso ainda precisa ser validada.
+- Medidas aproximadas relatadas: rodas mecanum de 6,225 cm de diâmetro; 15,5 cm entre centros das rodas esquerda/direita; 8,05 cm entre eixos dianteiro/traseiro. A medida separada de 8,3 cm continua sem eixo identificado. Os dois sensores inferiores ficam a ~1,3 cm do chão, sensor de cor F a ~2 cm e ultrassom E a ~2,9 cm.
+- Direções físicas relatadas: garra C, horário fecha e anti-horário abre; elevador D, anti-horário sobe e horário desce. Com a direção positiva padrão do Pybricks (horária vista pelo eixo), os comandos positivos correspondem a fechar a garra e baixar o elevador. A referência angular da montagem atual ainda precisa de calibração.
 - Valores históricos, ainda não confirmados na montagem atual: garra aberta 389°, fechada -60°; elevador baixo 197°, alto -1262°. Tempos antigos de 2,3 s (abrir), 0,4 s (fechar) e 0,7 s (elevador), a 180°/s, também são provisórios. Não trocar ângulos por tempos nem executar alvos antes de calibração supervisionada. O código mantém movimento da garra/elevador bloqueado por padrão.
 - Tráfego por BLE entre os dois hubs embarcados é comunicação interna do robô, não controle externo. O protótipo atual tem canais incompatíveis: HubClaw transmite em 141 enquanto HubDriver escuta 144; HubDriver tem broadcast 145, mas não transmite os comandos de retorno. O protocolo não foi testado com sucesso, e os programas autônomos ficam bloqueados por padrão até confirmação. Comunicação externa ou comando humano não pode decidir/navegar o robô durante a partida, salvo autorização expressa do árbitro.
 
@@ -172,9 +192,9 @@ As pontuações negativas não levam o total final abaixo de zero. O regulamento
 
 ## 11. O que os sensores atuais permitem afirmar — e o que não permitem
 
-O inventário em código dá dois sensores de cor no piso, um sensor de cor na garra, um ultrassom frontal e um sensor lateral de tipo desconhecido. Isso permite construir detecção de linhas/cores, aproximação por distância e classificação de objeto próximo após calibração. **Não demonstra** localização global da pose inicial aleatória, detecção omnidirecional de oponente, reconhecimento confiável de cor à distância, confirmação de cubo agarrado, identificação automática de plataformas sem varredura, nem evitar todos os obstáculos. Não prometer essas capacidades até desenvolver e comprovar sensores, geometria e software.
+O inventário mais recente é: sensores de cor inferiores A/B no HubDriver; sensor de cor F na garra e ultrassom E no HubClaw; HubClaw A sem função atribuída. Isso permite construir detecção de linhas/cores, aproximação por distância e classificação de objeto próximo após calibração. **Não demonstra** localização global da pose inicial aleatória, detecção omnidirecional de oponente, reconhecimento confiável de cor à distância, confirmação de cubo agarrado, identificação automática de plataformas sem varredura, nem evitar todos os obstáculos. Não prometer essas capacidades até desenvolver e comprovar sensores, geometria e software.
 
-O sonar frontal deve ser usado como zona de parada; o sensor de garra, como classificador de perto; sensores inferiores, como guarda contínua de limite e guia de linha. O sensor lateral só entra no algoritmo depois de identificar modelo/alcance/campo de visão. Motores podem apoiar odometria, mas escorregamento, giro e erros acumulados precisam ser corrigidos com as linhas e leituras reais.
+O ultrassom E deve ser usado como zona de parada; o sensor de cor F, como classificador de perto; sensores inferiores, como guarda contínua de limite e guia de linha. A orientação exata do ultrassom e a presença de qualquer sensor em HubClaw A precisam ser confirmadas. Motores podem apoiar odometria, mas escorregamento, giro e erros acumulados precisam ser corrigidos com as linhas e leituras reais.
 
 ## 12. Estado atual do software e lacunas prioritárias
 
@@ -184,13 +204,13 @@ Arquivos base: `hub_driver/`, `hub_claw/`, `docs/hardware_map.md`, `docs/arena_r
 - A rotina de garra aproxima-se de **qualquer objeto** no alcance e pode fechar/levantar sem confirmar cor ou elegibilidade. Não usá-la como programa de partida.
 - Ainda faltam máquina de estados completa, protocolo bidirecional de carga/destino/falha, mapa de rotas, seguir linhas, recuperação de linha, detecção de oponente, evitar vias bloqueadas, classificador com rejeição, confirmação de pega/entrega e sinal oficial de cubo branco.
 - O backup Pybricks de 28/10 contém leituras de cor/reflexão para A/B, tentativa de leitura RGB que falhou, testes separados para E e F e movimentos temporizados C/D. Os novos diagnósticos no projeto são somente leitura para os sensores conhecidos A/B e A/E. Não se incorporou o teste de F nem o movimento temporizado de garra/elevador, pois F não está identificado e os valores mecânicos são provisórios.
-- A documentação marca pendente: tipo/orientação do sensor HubClaw F, orientação exata do ultrassom E, confirmação dos sentidos positivos em todos os quatro motores, significado da medida de 8,3 cm, geometria final, HSV novo, referência segura dos atuadores, mapa de plataformas, rota de ruas, sinal do cubo branco, protocolo BLE, envelope estendido e ensaios completos.
+- A documentação marca pendente: confirmar se HubClaw A está vazio, orientação do sensor de cor F e do ultrassom E, confirmação dos sentidos positivos em todos os quatro motores, significado da medida de 8,3 cm, calibração final da geometria, validação dos HSV observados (especialmente azul/verde/preto), referência segura dos atuadores, mapa de plataformas, rota de ruas, sinal do cubo branco, protocolo BLE, envelope estendido e ensaios completos.
 - Os diagnósticos `hub_driver/calibrate_ground_sensors.py`, `hub_claw/calibrate_front_color.py` e `hub_claw/calibrate_ultrasonic.py` mostram leituras sem mover motores. O sensor F foi deixado de fora até identificação física.
 - A versão atual dos arquivos não deve ser chamada de autônoma/certificada. Um upload bem-sucedido não prova prontidão física.
 
 ## 13. Plano mínimo de validação antes de uma partida
 
-1. Verificar no hardware real porta/tipo/orientação de cada sensor e motor, inclusive confirmar HubClaw F.
+1. Verificar no hardware real porta/tipo/orientação de cada sensor e motor; confirmar orientação dos sensores HubClaw E/F e se HubClaw A está vazio.
 2. Medir robô inteiro com todos os mecanismos completamente estendidos: máximo 300 × 300 mm.
 3. Calibrar sensor de cor do chão para linhas preta, vermelha, azul, verde, amarela e zonas em ambos os lados e em luz real; validar parada imediata no vermelho.
 4. Calibrar separadamente o sensor da garra nos sete cubos reais e classes desconhecidas; medir taxa de confusão e rejeitar leituras incertas.

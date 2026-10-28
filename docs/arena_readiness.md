@@ -3,11 +3,14 @@
 The files in this project are an organized starting point, not a certified
 competition program. Complete and record these checks before autonomous runs.
 
-- [ ] Confirm the HubClaw port F device type, orientation, and behavior. Do not
-      instantiate it as a color or distance sensor until physically identified.
+- [ ] Confirm the HubClaw port F claw color sensor orientation and behavior.
+- [ ] Confirm HubClaw port A is unused in the current physical build, or update
+      the map if a device is connected there.
 - [ ] Confirm the exact orientation of the HubClaw port E ultrasonic sensor.
-- [ ] Measure cube colors with the HubClaw port A sensor at the real claw
+- [ ] Measure cube colors with the HubClaw port F sensor at the real claw
       distance; identify all seven competition colors and unknown readings.
+      Validate the observed HSV ranges, especially blue, green, and black,
+      before using any match as an autonomous pickup decision.
 - [ ] Confirm the four wheel directions and mecanum roller orientation with the
       robot lifted, then test forward, sideways, and rotation on the floor.
 - [ ] Resolve the wheel-geometry notes: older lateral spacing 15.5 cm,
@@ -17,6 +20,8 @@ competition program. Complete and record these checks before autonomous runs.
       behavior on the competition surface.
 - [ ] Verify the claw/elevator angle reference survives program start and hub
       power cycles. Test every target with the robot supported and at low speed.
+      Confirm physically that clockwise closes the claw and lowers the elevator
+      with the current motor mounting and Pybricks direction settings.
 - [ ] Confirm the historical angles (claw 389°/-60°, elevator 197°/-1262°)
       against the current build. Old timed values (2.3 s, 0.4 s, 0.7 s at
       180°/s) are references only; do not use them as calibration.

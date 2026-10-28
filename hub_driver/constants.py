@@ -9,14 +9,17 @@ FRONT_LEFT_PORT = Port.D
 FRONT_RIGHT_PORT = Port.E
 REAR_LEFT_PORT = Port.F
 
-# Provisional geometry notes only. These values conflict with newer physical
-# notes and must not be used for calibrated motion until remeasured.
+# Approximate measurements from the latest team notes. Recheck the current
+# build and calibrate motion before using these for odometry.
 MAX_MOTOR_SPEED = 700
 BENCH_STEP_SPEED = 60
 BENCH_STEP_DEGREES = 5
-WHEEL_RADIUS_CM = 3  # Legacy estimate; newer note says diameter ~= 6.225 cm.
-LX_CM = 12.818 / 2  # Legacy estimate; axis convention/measurement unverified.
-LY_CM = 7.978 / 2  # Legacy estimate; axis convention/measurement unverified.
+WHEEL_DIAMETER_CM = 6.225  # Approximate team measurement; recheck current build.
+WHEEL_RADIUS_CM = WHEEL_DIAMETER_CM / 2
+TRACK_WIDTH_CM = 15.5  # Lateral wheel-center spacing; approximate.
+WHEELBASE_CM = 8.05  # Longitudinal axle spacing; approximate.
+LX_CM = WHEELBASE_CM / 2
+LY_CM = TRACK_WIDTH_CM / 2
 WALL_TO_ROAD_CM = 8
 
 # Autonomous BLE movement is disabled until the two-hub protocol is tested.

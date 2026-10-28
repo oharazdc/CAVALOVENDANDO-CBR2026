@@ -1,9 +1,9 @@
 # Hardware map and calibration record
 
-This is the team's current **provisional** map, updated from the written notes
-and Pybricks backup received on 2026-10-28. Confirm every port against the
-physical build before running a program. In particular, HubClaw port F is
-unknown and must not be initialized as a guessed sensor type.
+This is the team's current map, updated from the written notes
+received on 2026-10-28. Dimensions and sensor HSV ranges remain approximate or
+unvalidated as marked below. Confirm ports against the physical build before
+running a program.
 
 ## HubDriver
 
@@ -23,15 +23,23 @@ rotation, but confirmation for all four motors is still outstanding.
 
 | Port | Connection |
 | --- | --- |
-| A | Front LEGO SPIKE color sensor aimed at cubes, mounted about 2 cm above floor |
+| A | Unassigned in the latest hardware map |
 | B | Empty / not assigned |
 | C | Claw motor |
 | D | Elevator motor |
 | E | LEGO SPIKE ultrasonic distance sensor; exact physical orientation unconfirmed |
-| F | Type, orientation, and function unconfirmed; do not assume color or distance |
+| F | LEGO SPIKE color sensor in the claw, used to identify cubes; mounted about 2 cm above floor |
+
+Physical actuator directions reported by the team: clockwise closes the claw
+and counterclockwise opens it; counterclockwise raises the elevator and
+clockwise lowers it. Pybricks defines positive motor direction as clockwise by
+default when viewed from the output shaft. The angle endpoints below remain
+unconfirmed, so movement stays locked.
 
 The team reports the claw can carry two cubes stacked vertically. Physical
-retention and stability on the course are not yet documented.
+retention and stability on the course are not yet documented. Sensor E is
+ultrasonic and about 2.9 cm above the floor; its exact pointing direction still
+needs confirmation.
 
 ## Provisional geometry
 
@@ -41,11 +49,11 @@ approximately **6.225 cm**. A newer message mentions **8.3 cm** without saying
 which centers were measured. Keep all these values provisional until the team
 identifies what 8.3 cm refers to and remeasures the current build.
 
-The current source constants (`WHEEL_RADIUS_CM = 3`, `LX_CM = 12.818 / 2`,
-`LY_CM = 7.978 / 2`) are legacy estimates and disagree with the earlier written
-measurements. They are not calibrated and are not currently used by the
-low-level drive class. The old frame notes (8 cm lateral, 13.5 cm structural
-height) also need rechecking after the physical changes. The complete robot,
+The source geometry constants have been updated to radius 3.1125 cm,
+`LX_CM = WHEELBASE_CM / 2`, and `LY_CM = TRACK_WIDTH_CM / 2`. Measurements remain
+approximate; the 8.3 cm note is still unresolved, and actual distance/turn
+accuracy is not calibrated. The old frame notes (8 cm lateral, 13.5 cm
+structural height) also need rechecking after the physical changes. The complete robot,
 including fully extended claw, must remain within the competition's
 300 x 300 mm footprint.
 
@@ -67,17 +75,33 @@ hard stops.
 
 ## Sensor readings and calibration
 
-The backup includes readout attempts for the lower A/B sensors, a sensor at F,
-the ultrasonic sensor at E, and a color sensor at F. These scripts do not prove
-the physical identity or hub assignment of port F. One log reports that
-`ColorSensor.rgb()` is unsupported on the tested firmware; the new in-project
-diagnostics use `color()` and `reflection()` for known sensor ports.
+The backup includes readout attempts for the lower A/B sensors, the ultrasonic
+sensor at E, and the claw color sensor at F. One log reports that
+`ColorSensor.rgb()` is unsupported on the tested firmware; use `hsv()` for
+cube readings. The in-project diagnostics also print `color()` and
+`reflection()` for context.
 
 Older floor HSV values remain in `hub_driver/constants.py` only as historical
-samples. They are not verified on the current build or arena surface. New
-readings for both lower sensors and the front cube sensor are still required.
-Calibrate any side color sensor separately only after confirming that one is
-physically present. Do not reuse floor samples as cube thresholds.
+samples. They are not verified on the current build or arena surface. Observed
+cube HSV ranges are stored in `hub_claw/constants.py`; they are not definitive
+classification limits. Validate especially blue/green/black before using them
+for autonomous pickup. The brown hue was reported only as approximately 10, so
+the code deliberately does not match brown to a candidate yet. Do not reuse
+floor samples as cube thresholds.
+
+| Cube color | H (hue) | S (saturation) | V (brightness) |
+| --- | ---: | ---: | ---: |
+| Red | 348–354 | 77–80 | 26–28 |
+| Yellow | 55–56 | 61–62 | 99–100 |
+| Green | 170–180 | 57–67 | 7–10 |
+| Blue | 189–200 | 66–71 | 8–10 |
+| Black | 170–190 | 45–51 | 7–10 |
+| White | 194–215 | 15–27 | 34–100 |
+| Brown | ~10 | 39–42 | 20–22 |
+
+Brown's hue is approximate and is intentionally not included in automatic
+candidate matching yet. The code prints candidate matches only; it does not use
+these observations to authorize pickup.
 
 ## Communication and strategy status
 

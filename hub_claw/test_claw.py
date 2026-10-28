@@ -31,7 +31,7 @@ sensors = ClawSensors()
 
 print("No automatic movement.")
 if MECHANISM_CALIBRATION_CONFIRMED:
-    print("LEFT=open 10 deg; RIGHT=close 10 deg")
+    print("LEFT=open 10 deg (counterclockwise); RIGHT=close 10 deg (clockwise)")
     print("BLUETOOTH=elevator up 10 deg; LEFT+RIGHT=down 10 deg")
 else:
     print("Mechanism calibration is unconfirmed; this test will not move motors.")
@@ -65,17 +65,17 @@ while True:
         print("Elevator target:", target)
     elif Button.LEFT in pressed:
         target = clamp(
-            claw.claw_motor.angle() + BENCH_STEP_DEGREES,
-            CLAW_CLOSED_ANGLE,
-            CLAW_OPEN_ANGLE,
+            claw.claw_motor.angle() - BENCH_STEP_DEGREES,
+            min(CLAW_CLOSED_ANGLE, CLAW_OPEN_ANGLE),
+            max(CLAW_CLOSED_ANGLE, CLAW_OPEN_ANGLE),
         )
         claw.set_claw_angle(target)
         print("Claw target:", target)
     elif Button.RIGHT in pressed:
         target = clamp(
-            claw.claw_motor.angle() - BENCH_STEP_DEGREES,
-            CLAW_CLOSED_ANGLE,
-            CLAW_OPEN_ANGLE,
+            claw.claw_motor.angle() + BENCH_STEP_DEGREES,
+            min(CLAW_CLOSED_ANGLE, CLAW_OPEN_ANGLE),
+            max(CLAW_CLOSED_ANGLE, CLAW_OPEN_ANGLE),
         )
         claw.set_claw_angle(target)
         print("Claw target:", target)

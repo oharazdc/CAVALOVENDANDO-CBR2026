@@ -26,7 +26,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Pybricks: leitura do sensor de cor frontal A",
+      "label": "Pybricks: leitura do sensor de cor da garra F",
       "type": "process",
       "command": "${workspaceFolder}\\.venv-pybricks\\Scripts\\pybricksdev.exe",
       "args": ["run", "ble", "hub_claw\\calibrate_front_color.py", "--no-wait"],

@@ -1,8 +1,8 @@
-"""HubClaw sensor access. Port F is omitted until its sensor type is confirmed."""
+"""HubClaw sensor access for claw color sensor F and ultrasonic sensor E."""
 
 from pybricks.pupdevices import ColorSensor, UltrasonicSensor
 
-from constants import CLAW_SENSOR_PORT, ULTRASONIC_SENSOR_PORT
+from constants import CLAW_SENSOR_PORT, CUBE_HSV_OBSERVED, ULTRASONIC_SENSOR_PORT
 
 
 class ClawSensors:
@@ -19,6 +19,25 @@ class ClawSensors:
 
     def read_cube_reflection(self) -> int:
         return self.claw_color.reflection()
+
+    def observed_cube_color_candidates(self, hsv: tuple = None) -> tuple:
+        """Return matches to observed HSV ranges, not validated color decisions."""
+        if hsv is None:
+            hsv = self.read_cube_hsv()
+
+        hue, saturation, value = hsv
+        matches = []
+        for name, ranges in CUBE_HSV_OBSERVED.items():
+            if ranges is None:
+                continue
+            h_range, s_range, v_range = ranges
+            if (
+                h_range[0] <= hue <= h_range[1]
+                and s_range[0] <= saturation <= s_range[1]
+                and v_range[0] <= value <= v_range[1]
+            ):
+                matches.append(name)
+        return tuple(matches)
 
     def read_front_distance_mm(self) -> int:
         return self.front_distance.distance()

@@ -55,12 +55,12 @@ not the hub firmware.
 
 | Port | Device |
 | --- | --- |
-| A | Front color sensor aimed at cubes (~2 cm above floor) |
+| A | Unassigned in the latest hardware map |
 | B | Empty |
 | C | Claw open/close motor |
 | D | Elevator motor |
 | E | Ultrasonic distance sensor; exact physical orientation still needs confirmation |
-| F | Unconfirmed device; do not initialize as a color or distance sensor until checked |
+| F | Claw color sensor for cube identification (~2 cm above floor) |
 
 Historical HubClaw motor targets (not confirmed against the current physical build):
 
@@ -78,8 +78,8 @@ devices and report sensor readings; they do not start autonomous movement.
 The wheel diagnostic moves one wheel by a small step. Claw/elevator movement is
 locked until the current mechanism calibration is confirmed in
 `hub_claw/constants.py`. Read-only sensor diagnostics are available for the
-known HubDriver A/B sensors and HubClaw A/E sensors; HubClaw port F remains
-unassigned until its physical device is identified.
+known HubDriver A/B sensors and HubClaw E/F sensors. HubClaw port A is
+unassigned in the latest hardware map.
 The robot is **not yet ready to run a competition match**: see
 [`docs/arena_readiness.md`](docs/arena_readiness.md) for the remaining physical
 commissioning work. Do not treat a successful Python upload as proof that the
